@@ -1,2 +1,15 @@
 node_modules
 rotas.txt
+src/routes/dataExample.json
+/src/generated/prisma
+
+.env
+/src/generated/prisma
+
+/src/generated/prisma
+
+/generated/prisma
+
+/src/generated/prisma
+
+/src/generated/prisma

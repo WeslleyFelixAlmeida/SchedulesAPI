@@ -1,6 +1,7 @@
-export default interface IUser{
-    id: number;
-    username: string;
-    cpf: string;
-    phoneNumber: number
-}
+import { z } from "zod";
+import { userSchemaRegister } from "../Schemas/Schemas";
+
+export type UserRegisterType = Omit<
+  z.infer<typeof userSchemaRegister>,
+  "confirmPassword"
+>;
