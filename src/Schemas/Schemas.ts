@@ -25,4 +25,9 @@ const userSchemaRegister = z
     path: ["confirmPassword"],
   });
 
-export { userSchemaRegister };
+const userSchemaLogin = z.object({
+  email: z.email({ message: registerMessages.invalidEmail }),
+  password: z.string().min(5, { message: registerMessages.passwordLowerThan5 }),
+});
+
+export { userSchemaRegister, userSchemaLogin };
