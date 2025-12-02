@@ -2,11 +2,13 @@ import express from "express";
 import userRoutes from "./routes/userRoutes";
 import eventRoutes from "./routes/eventRoutes";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 const server = express();
 const PORT = 3000;
 
 server.use(express.json());
+server.use(cookieParser());
 
 server.use(
   cors({

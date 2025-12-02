@@ -7,6 +7,7 @@ class UserModel {
       const newUser = await prisma.user.create({
         data: data,
       });
+      
       return newUser;
     } catch (error: any) {
       throw new Error(error);
