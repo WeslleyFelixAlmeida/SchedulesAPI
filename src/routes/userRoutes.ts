@@ -4,12 +4,12 @@ import { userValidateRegister, userValidateLogin, authMiddleware } from "../midd
 
 const userRoutes = Router();
 
-userRoutes.post("/create", userValidateRegister, userController.createUser.bind(userController));
+userRoutes.post("/register", userValidateRegister, userController.createUser.bind(userController));
 userRoutes.post("/login", userValidateLogin, userController.login.bind(userController));
 userRoutes.post("/logout", userController.logout.bind(userController));
 
 
-userRoutes.get("/teste", authMiddleware, userController.teste.bind(userController));
+userRoutes.get("/isAuth", authMiddleware, userController.teste.bind(userController));
 
 
 export default userRoutes;

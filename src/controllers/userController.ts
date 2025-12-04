@@ -9,7 +9,6 @@ class UserController {
     this.userService = new UserService();
   }
 
-
   async createUser(req: Request, res: Response) {
     console.log("Entrou no controller");
 
@@ -22,7 +21,7 @@ class UserController {
         password: password,
       });
 
-      res.status(201).json({ message: "usuário criado com sucesso!" });
+      res.status(201).json({ success: true });
     } catch (err) {
       res.status(500).json("Erro interno no servidor." + err);
     }
@@ -30,6 +29,8 @@ class UserController {
 
   async login(req: Request, res: Response) {
     const { email, password }: UserLoginType = req.body;
+
+    console.log(email, password);
 
     try {
       const login = await this.userService.login({
