@@ -1,5 +1,5 @@
 import prisma from "../Connection/prismaClient";
-import type { UserType, UserRegisterType } from "../types/types";
+import type { UserType, UserRegisterType } from "../types/userTypes";
 
 class UserModel {
   async createUser(data: UserRegisterType) {

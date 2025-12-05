@@ -1,6 +1,6 @@
 import { UserService } from "../services/userService";
 import { Response, Request } from "express";
-import { UserLoginType, UserRegisterType } from "../types/types";
+import { UserLoginType, UserRegisterType } from "../types/userTypes";
 import { InvalidCredentialsException } from "../Exceptions/Exceptions";
 
 class UserController {

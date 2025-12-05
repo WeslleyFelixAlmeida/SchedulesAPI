@@ -1,5 +1,5 @@
 import { UserModel } from "../models/userModel";
-import type { UserLoginType, UserRegisterType, UserType } from "../types/types";
+import type { UserLoginType, UserRegisterType, UserType } from "../types/userTypes";
 import bcrypt from "bcrypt";
 import { InvalidCredentialsException } from "../Exceptions/Exceptions";
 import jwt from "jsonwebtoken";

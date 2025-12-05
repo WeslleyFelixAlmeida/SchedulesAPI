@@ -6,13 +6,11 @@ export type UserRegisterType = Omit<
   "confirmPassword"
 >;
 
-export type UserType = Pick<
-  z.infer<typeof userSchemaRegister>,
-  "email"
->;
-
+export type UserType = Pick<z.infer<typeof userSchemaRegister>, "email">;
 
 export type UserLoginType = Pick<
   z.infer<typeof userSchemaRegister>,
   "email" | "password"
 >;
+
+
