@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { z, ZodError } from "zod";
-import { userSchemaLogin, userSchemaRegister } from "../Schemas/Schemas";
+import { userSchemaLogin, userSchemaRegister } from "../Schemas/userSchemas";
 import jwt from "jsonwebtoken";
 
 async function authMiddleware(req: Request, res: Response, next: NextFunction) {

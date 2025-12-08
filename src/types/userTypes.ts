@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { userSchemaRegister } from "../Schemas/Schemas";
+import { userSchemaRegister } from "../Schemas/userSchemas";
 
 export type UserRegisterType = Omit<
   z.infer<typeof userSchemaRegister>,
