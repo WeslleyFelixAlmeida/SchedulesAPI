@@ -1,7 +1,7 @@
 import { EventService } from "../services/eventService";
 import { Request, Response } from "express";
 import { multipleScheduleSchema } from "../Schemas/eventSchemas";
-import { ZodError } from "zod";
+import { success, ZodError } from "zod";
 
 class EventController {
   private eventService: EventService;
@@ -12,8 +12,11 @@ class EventController {
   async createEventMultipleSchedule(req: Request, res: Response) {
     try {
       const data = multipleScheduleSchema.parse(req.body);
-      console.log(data);
-      res.status(201).json({ data: data });
+      const createEvent = await this.eventService.createEventMultipleSchedule(
+        data
+      );
+
+      res.status(201).json({ eventId: createEvent.eventId });
     } catch (err: any) {
       if (err instanceof ZodError) {
         return res
@@ -23,7 +26,7 @@ class EventController {
               err
           );
       }
-      res.status(500).json("Erro interno no servidor");
+      res.status(500).json("Erro interno no servidor " + err);
     }
   }
 

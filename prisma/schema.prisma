@@ -6,12 +6,64 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
-
 model User {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  email     String   @unique
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  email     String    @unique
   username  String
   password  String
-  role      String   @default("user")
+  role      String    @default("user")
+
+  events    Events[]               // eventos criados pelo usuário
+  multipleSchedules EventMultipleSchedules[] // reservas em escalas múltiplas
+  uniqueSchedules    EventUniqueSchedules[]  // reservas em evento único
 }
+
+enum EventType {
+  UNIQUE
+  MULTIPLE
+}
+
+model Events {
+  id               Int        @id @default(autoincrement())
+  month            Int
+  year             Int
+  image            Bytes
+  name             String     @db.VarChar(225)
+  shortDescription String     @db.VarChar(225)
+  longDescription  String
+  type             EventType
+  userId           Int
+
+  user             User       @relation(fields: [userId], references: [id])
+
+  multipleSchedules EventMultipleSchedules[]
+  uniqueSchedules    EventUniqueSchedules[]
+}
+
+model EventMultipleSchedules {
+  id       Int    @id @default(autoincrement())
+  day      Int
+  schedule String  @db.VarChar(225)
+  occupied Boolean @default(false)
+
+  eventId  Int?   // FK opcional
+  userId   Int?   // FK opcional
+
+  event    Events? @relation(fields: [eventId], references: [id])
+  user     User?   @relation(fields: [userId], references: [id])
+}
+
+model EventUniqueSchedules {
+  id       Int      @id @default(autoincrement())
+  date     DateTime
+  schedule String    @db.VarChar(225)
+
+  eventId  Int?
+  userId   Int?
+
+  event    Events?   @relation(fields: [eventId], references: [id])
+  user     User?     @relation(fields: [userId], references: [id])
+}
+
+
