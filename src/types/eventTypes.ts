@@ -1,21 +1,23 @@
 import { z } from "zod";
-import { multipleScheduleSchema } from "../Schemas/eventSchemas";
-import { Events, EventMultipleSchedules } from "@prisma/client";
+import {
+  multipleScheduleSchema,
+  uniqueScheduleSchema,
+} from "../Schemas/eventSchemas";
+import {
+  Events,
+  EventMultipleSchedules,
+  EventUniqueSchedules,
+} from "@prisma/client";
 
+//Uniqueschedule:
+export type eventUniqueType = z.infer<typeof uniqueScheduleSchema>;
+export type eventModelType = Omit<Events, "id">;
+export type eventUniqueSchedulesType = Omit<EventUniqueSchedules, "id">;
+
+//Multipleschedule:
 export type multipleSchedulesType = z.infer<typeof multipleScheduleSchema>;
 
-export type schedulesMultipleType = Events;
-// {
-//   days: { day: number; schedules: string[] }[];
-//   month: number;
-//   year: number;
-//   image: string;
-//   name: string;
-//   shortDescription: string;
-//   longDescription: string;
-//   type: "multiple";
-//   userId: number;
-// };
+export type schedulesMultipleType = eventModelType;
 
 export type createMultipleSchedModelType = Omit<
   schedulesMultipleType,
@@ -26,13 +28,3 @@ export type schedulesArrayType = Omit<
   EventMultipleSchedules,
   "id" | "userId" | "occupied"
 >;
-
-export type uniqueSchedulesType = {
-  day: number;
-  maxAmount: number;
-  month: number;
-  image: Blob;
-  name: string;
-  shortDescription: string;
-  longDescription: string;
-};

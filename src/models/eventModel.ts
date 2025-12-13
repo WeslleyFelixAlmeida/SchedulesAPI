@@ -1,9 +1,11 @@
+import { EventUniqueSchedules } from "@prisma/client";
 import prisma from "../Connection/prismaClient";
 
 import type {
   createMultipleSchedModelType,
+  eventModelType,
+  eventUniqueSchedulesType,
   multipleSchedulesType,
-  uniqueSchedulesType,
 } from "../types/eventTypes";
 
 class EventModel {
@@ -18,7 +20,7 @@ class EventModel {
     }
   }
 
-  async createSchedules(
+  async createSchedulesMultiple(
     schedules: Pick<multipleSchedulesType, "days">,
     eventId: number
   ) {
@@ -38,7 +40,28 @@ class EventModel {
     }
   }
 
-  async createEventUniqueSchedule(eventData: uniqueSchedulesType) {}
+  async createEventUniqueSchedule(eventData: eventModelType) {
+    try {
+      const create = await prisma.events.create({
+        data: eventData,
+      });
+      return create.id;
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  }
+
+  async createSchedulesUnique(eventsArray: eventUniqueSchedulesType[]) {
+    // Inserindo os dias
+
+    try {
+      const create = await prisma.eventUniqueSchedules.createMany({
+        data: eventsArray,
+      });
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  }
 }
 
 export { EventModel };

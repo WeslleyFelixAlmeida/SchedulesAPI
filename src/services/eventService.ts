@@ -1,8 +1,10 @@
 import { EventModel } from "../models/eventModel";
 import {
+  eventModelType,
+  eventUniqueSchedulesType,
+  eventUniqueType,
   multipleSchedulesType,
   schedulesMultipleType,
-  uniqueSchedulesType,
 } from "../types/eventTypes";
 
 class EventService {
@@ -27,7 +29,7 @@ class EventService {
       eventData
     );
 
-    const createSchedules = await this.eventModel.createSchedules(
+    const createSchedules = await this.eventModel.createSchedulesMultiple(
       { days: data.days },
       createdEventId
     );
@@ -35,7 +37,40 @@ class EventService {
     return { eventId: createdEventId };
   }
 
-  async createEventUniqueSchedule(eventData: uniqueSchedulesType) {}
+  async createEventUniqueSchedule(data: eventUniqueType) {
+    const eventDate = new Date(data.date);
+
+    const eventData: Omit<eventModelType, "days" | "id"> = {
+      month: eventDate.getMonth(),
+      year: eventDate.getFullYear(),
+      image: Buffer.from(data.eventImage.split(",")[1], "base64"),
+      name: data.eventName,
+      shortDescription: data.eventShortDesc,
+      longDescription: data.eventLongDesc,
+      type: "UNIQUE",
+      userId: 1,
+    };
+
+    const createdEventId = await this.eventModel.createEventUniqueSchedule(
+      eventData
+    );
+
+    let eventsArray: eventUniqueSchedulesType[] = [];
+    for (let i = 0; i < data.maxAmount; i++) {
+      eventsArray.push({
+        date: eventDate,
+        schedule: data.hour,
+        eventId: createdEventId,
+        userId: null,
+      });
+    }
+
+    const createSchedules = await this.eventModel.createSchedulesUnique(
+      eventsArray
+    );
+
+    return { eventId: createdEventId };
+  }
 }
 
 export { EventService };
