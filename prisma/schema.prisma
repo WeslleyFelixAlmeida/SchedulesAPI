@@ -33,6 +33,8 @@ model Events {
   shortDescription String     @db.VarChar(225)
   longDescription  String
   type             EventType
+  imageType        String?
+
   userId           Int
 
   user             User       @relation(fields: [userId], references: [id])

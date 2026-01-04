@@ -53,7 +53,6 @@ class EventModel {
 
   async createSchedulesUnique(eventsArray: eventUniqueSchedulesType[]) {
     // Inserindo os dias
-
     try {
       const create = await prisma.eventUniqueSchedules.createMany({
         data: eventsArray,
@@ -61,6 +60,22 @@ class EventModel {
     } catch (error: any) {
       throw new Error(error);
     }
+  }
+
+  async getEvents(){
+    try {
+      const events = await prisma.events.findMany({take: 10});
+      return events;
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  }
+
+  async getMultipleSchedules(){
+
+  }
+  async getUniqueSchedules(){
+
   }
 }
 

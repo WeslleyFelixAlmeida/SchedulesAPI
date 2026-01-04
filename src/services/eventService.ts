@@ -13,11 +13,23 @@ class EventService {
     this.eventModel = new EventModel();
   }
 
+  private treatImage(image: string) {
+    const [meta, base64] = image.split(",");
+
+    const imageType = meta.replace("data:", "").replace(";base64", "");
+    const imageBuffer = Buffer.from(base64, "base64");
+
+    return { image: imageBuffer, imageType: imageType };
+  }
+
   async createEventMultipleSchedule(data: multipleSchedulesType) {
+    const treatedImage = this.treatImage(data.eventImage);
+
     const eventData: Omit<schedulesMultipleType, "days" | "id"> = {
       month: data.month,
       year: new Date().getFullYear(),
-      image: Buffer.from(data.eventImage.split(",")[1], "base64"),
+      image: treatedImage.image,
+      imageType: treatedImage.imageType,
       name: data.eventName,
       shortDescription: data.eventShortDesc,
       longDescription: data.eventLongDesc,
@@ -38,12 +50,14 @@ class EventService {
   }
 
   async createEventUniqueSchedule(data: eventUniqueType) {
+    const treatedImage = this.treatImage(data.eventImage);
     const eventDate = new Date(data.date);
 
     const eventData: Omit<eventModelType, "days" | "id"> = {
       month: eventDate.getMonth(),
       year: eventDate.getFullYear(),
-      image: Buffer.from(data.eventImage.split(",")[1], "base64"),
+      image: treatedImage.image,
+      imageType: treatedImage.imageType,
       name: data.eventName,
       shortDescription: data.eventShortDesc,
       longDescription: data.eventLongDesc,
@@ -70,6 +84,21 @@ class EventService {
     );
 
     return { eventId: createdEventId };
+  }
+
+  async getEvents() {
+    const events = await this.eventModel.getEvents();
+
+    const formatEventsImage = events.map((event) => ({
+      ...event,
+      image: event.image
+        ? `data:${event.imageType};base64,${Buffer.from(event.image).toString(
+            "base64"
+          )}`
+        : null,
+    }));
+
+    return formatEventsImage;
   }
 }
 

@@ -7,7 +7,7 @@ class UserModel {
       const newUser = await prisma.user.create({
         data: data,
       });
-      
+
       return newUser;
     } catch (error: any) {
       throw new Error(error);
@@ -19,6 +19,24 @@ class UserModel {
       const userData = await prisma.user.findUnique({
         where: {
           email: data.email,
+        },
+      });
+      return userData;
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  }
+
+  async getUserData(userId: number) {
+    try {
+      const userData = await prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+        select: {
+          email: true,
+          username: true,
+          //image: true //eventualmente vai ser adicionado a foto de perfil
         },
       });
       return userData;

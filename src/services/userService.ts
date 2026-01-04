@@ -1,5 +1,9 @@
 import { UserModel } from "../models/userModel";
-import type { UserLoginType, UserRegisterType, UserType } from "../types/userTypes";
+import type {
+  UserLoginType,
+  UserRegisterType,
+  UserType,
+} from "../types/userTypes";
 import bcrypt from "bcrypt";
 import { InvalidCredentialsException } from "../Exceptions/Exceptions";
 import jwt from "jsonwebtoken";
@@ -28,7 +32,7 @@ class UserService {
 
   async createUser(data: UserRegisterType) {
     const passwordHash = await this.createPasswordHash(data.password);
-    const additionalInfos = {  password: passwordHash };
+    const additionalInfos = { password: passwordHash };
 
     return await this.userModel.createUser({ ...data, ...additionalInfos });
   }
@@ -49,9 +53,18 @@ class UserService {
       throw new InvalidCredentialsException();
     }
 
-    const createJWT = await this.generateToken({ id: userData?.id });
+    const createJWT = await this.generateToken({
+      id: userData?.id,
+      role: userData?.role,
+    });
 
     return { auth_token: createJWT };
+  }
+
+  async getUserData(data: { userId: number }) {
+    const userdata = await this.userModel.getUserData(data.userId);
+
+    return userdata;
   }
 }
 

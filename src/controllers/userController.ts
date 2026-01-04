@@ -10,8 +10,6 @@ class UserController {
   }
 
   async createUser(req: Request, res: Response) {
-    console.log("Entrou no controller");
-
     const { username, email, password }: UserRegisterType = req.body;
 
     try {
@@ -29,8 +27,6 @@ class UserController {
 
   async login(req: Request, res: Response) {
     const { email, password }: UserLoginType = req.body;
-
-    console.log(email, password);
 
     try {
       const login = await this.userService.login({
@@ -69,8 +65,19 @@ class UserController {
     }
   }
 
-  async teste(req: Request, res: Response) {
-    res.status(200).json({ message: "Funciona!" });
+  async getUserInfo(req: Request, res: Response) {
+    const userId = req.user?.id as number;
+    try {
+      const userData = await this.userService.getUserData({ userId: userId });
+
+      res.status(200).json({ userData: userData });
+    } catch (err: any) {
+      res.status(500).json("Erro interno no servidor");
+    }
+  }
+
+  async isAuth(req: Request, res: Response) {
+    res.status(200).json({ allowed: true });
   }
 }
 const userController = new UserController();

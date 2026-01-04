@@ -16,4 +16,11 @@ eventRoutes.post(
   eventController.createEventMultipleSchedule.bind(eventController)
 );
 
+eventRoutes.get(
+  "/",
+  // authMiddleware,
+  eventController.getEvents.bind(eventController)
+);
+
+
 export default eventRoutes;

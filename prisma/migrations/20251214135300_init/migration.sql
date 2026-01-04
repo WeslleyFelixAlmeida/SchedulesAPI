@@ -21,6 +21,7 @@ CREATE TABLE `Events` (
     `shortDescription` VARCHAR(225) NOT NULL,
     `longDescription` VARCHAR(191) NOT NULL,
     `type` ENUM('UNIQUE', 'MULTIPLE') NOT NULL,
+    `imageType` VARCHAR(191) NULL,
     `userId` INTEGER NOT NULL,
 
     PRIMARY KEY (`id`)

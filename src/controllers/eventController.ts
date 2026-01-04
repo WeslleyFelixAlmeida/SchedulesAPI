@@ -36,9 +36,11 @@ class EventController {
   async createEventUniqueSchedule(req: Request, res: Response) {
     try {
       const data = uniqueScheduleSchema.parse(req.body);
-      
-      const createEvent = await this.eventService.createEventUniqueSchedule(data);
-      
+
+      const createEvent = await this.eventService.createEventUniqueSchedule(
+        data
+      );
+
       res.status(201).json({ data: createEvent });
     } catch (err: any) {
       if (err instanceof ZodError) {
@@ -49,6 +51,15 @@ class EventController {
               err
           );
       }
+      res.status(500).json("Erro interno no servidor " + err);
+    }
+  }
+
+  async getEvents(req: Request, res: Response) {
+    try {
+      const events = await this.eventService.getEvents();
+      res.status(200).json({ data: events });
+    } catch (err: any) {
       res.status(500).json("Erro interno no servidor " + err);
     }
   }

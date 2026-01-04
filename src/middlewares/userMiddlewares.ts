@@ -1,16 +1,28 @@
 import { Request, Response, NextFunction } from "express";
 import { z, ZodError } from "zod";
 import { userSchemaLogin, userSchemaRegister } from "../Schemas/userSchemas";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
+
+interface authTokenPayload extends JwtPayload {
+  id: number;
+}
 
 async function authMiddleware(req: Request, res: Response, next: NextFunction) {
   try {
     const auth_token = req.cookies?.auth_token;
-    if (!auth_token) {
-      return res.status(401).json({ message: "Acesso negado!" });
+
+    if (!auth_token) {  
+      return res
+        .status(401)
+        .json({ message: "Acesso negado!", allowed: false });
     }
 
-    const decodeCookie = jwt.verify(auth_token, process.env.JWT_SECRET!);
+    const decodeCookie = jwt.verify(
+      auth_token,
+      process.env.JWT_SECRET!
+    ) as authTokenPayload;
+
+    req.user = { id: decodeCookie.id };
 
     next();
   } catch (err: any) {
