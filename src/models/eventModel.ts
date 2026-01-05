@@ -88,8 +88,34 @@ class EventModel {
     //Cuidado ao puxar as informações deste tipo de evento, pois um unico evento pode ter centenas de registros
   }
 
-  async getUniqueSchedules(eventId: number) {
-   
+  async getUniqueSchedules(eventId: number) {}
+
+  async getMaxAndCurrentAmountUnique(eventId: number) {
+    const maxAmount = await prisma.eventUniqueSchedules.count({
+      where: { eventId: eventId },
+    });
+
+    const eventData = await prisma.eventUniqueSchedules.findMany({
+      where: { eventId: eventId },
+    });
+
+    let currentAmount = 0;
+
+    const count = eventData.forEach((event) => {
+      if (event.userId !== null) {
+        currentAmount += 1;
+      }
+    });
+
+    return { maxAmount: maxAmount, currentAmount: currentAmount };
+  }
+
+  async isParticipatingUnique(userId: number, eventId: number) {
+    const isParticipating = await prisma.eventUniqueSchedules.count({
+      where: { userId: userId, eventId: eventId },
+    });
+    
+    return isParticipating > 0 ? true : false;
   }
 }
 

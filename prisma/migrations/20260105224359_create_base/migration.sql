@@ -22,6 +22,7 @@ CREATE TABLE `Events` (
     `longDescription` VARCHAR(191) NOT NULL,
     `type` ENUM('UNIQUE', 'MULTIPLE') NOT NULL,
     `imageType` VARCHAR(191) NULL,
+    `status` ENUM('OPEN', 'CLOSED') NOT NULL DEFAULT 'OPEN',
     `userId` INTEGER NOT NULL,
 
     PRIMARY KEY (`id`)

@@ -24,6 +24,11 @@ enum EventType {
   MULTIPLE
 }
 
+enum EventStatus {
+  OPEN
+  CLOSED
+}
+
 model Events {
   id               Int        @id @default(autoincrement())
   month            Int
@@ -35,13 +40,15 @@ model Events {
   type             EventType
   imageType        String?
 
-  userId           Int
+  status           EventStatus @default(OPEN)
 
+  userId           Int
   user             User       @relation(fields: [userId], references: [id])
 
   multipleSchedules EventMultipleSchedules[]
   uniqueSchedules    EventUniqueSchedules[]
 }
+
 
 model EventMultipleSchedules {
   id       Int    @id @default(autoincrement())

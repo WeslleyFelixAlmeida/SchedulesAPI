@@ -86,7 +86,7 @@ class EventService {
     return { eventId: createdEventId };
   }
 
-  async getEvents() {
+  async getEvents(userId: number) {
     const events = await this.eventModel.getEvents();
 
     const formatEventsImage = events.map((event) => ({
@@ -98,7 +98,45 @@ class EventService {
         : null,
     }));
 
-    return formatEventsImage;
+    const isParticipating = await Promise.all(
+      formatEventsImage.map(async (event) => {
+        if (event.type === "UNIQUE") {
+          const isParticipating = await this.eventModel.isParticipatingUnique(
+            userId,
+            event.id
+          );
+
+          const { maxAmount, currentAmount } =
+            await this.eventModel.getMaxAndCurrentAmountUnique(userId);
+
+          return {
+            id: event.id,
+            title: event.name,
+            shortDescription: event.shortDescription,
+            currentStatus: "open",
+            eventType: event.type,
+            currentAmount: currentAmount,
+            maxAmount: maxAmount,
+            eventImage: event.image,
+            isParticipating: isParticipating,
+          };
+        } else if (event.type === "MULTIPLE") {
+          return {
+            id: event.id,
+            title: event.name,
+            shortDescription: event.shortDescription,
+            currentStatus: "open",
+            eventType: event.type,
+            currentAmount: 0,
+            maxAmount: 0,
+            eventImage: event.image,
+            isParticipating: false,
+          };
+        }
+      })
+    );
+
+    return isParticipating;
   }
 }
 

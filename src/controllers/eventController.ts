@@ -57,8 +57,10 @@ class EventController {
 
   async getEvents(req: Request, res: Response) {
     try {
-      const events = await this.eventService.getEvents();
-      res.status(200).json({ data: events });
+      const userId = req.user?.id;
+      const events = await this.eventService.getEvents(userId as number);
+      
+      res.status(200).json(events);
     } catch (err: any) {
       res.status(500).json("Erro interno no servidor " + err);
     }
