@@ -38,7 +38,7 @@ class UserController {
         httpOnly: true,
         secure: false,
         sameSite: "strict",
-        maxAge: 60 * 1000,
+        maxAge: 60 * 1000 * 10,
       });
 
       res.status(200).json({ success: true });
@@ -70,7 +70,7 @@ class UserController {
     try {
       const userData = await this.userService.getUserData({ userId: userId });
 
-      res.status(200).json({ userData: userData });
+      res.status(200).json({ ...userData, userImage: "" });
     } catch (err: any) {
       res.status(500).json("Erro interno no servidor");
     }

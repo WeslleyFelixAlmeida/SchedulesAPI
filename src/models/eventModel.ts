@@ -62,20 +62,34 @@ class EventModel {
     }
   }
 
-  async getEvents(){
+  async getEvents() {
     try {
-      const events = await prisma.events.findMany({take: 10});
+      const events = await prisma.events.findMany({
+        take: 10,
+        select: {
+          id: true,
+          month: true,
+          year: true,
+          image: true,
+          name: true,
+          shortDescription: true,
+          longDescription: true,
+          type: true,
+          imageType: true,
+        },
+      });
       return events;
     } catch (error: any) {
       throw new Error(error);
     }
   }
 
-  async getMultipleSchedules(){
-
+  async getMultipleSchedules(eventId: number) {
+    //Cuidado ao puxar as informações deste tipo de evento, pois um unico evento pode ter centenas de registros
   }
-  async getUniqueSchedules(){
 
+  async getUniqueSchedules(eventId: number) {
+   
   }
 }
 

@@ -6,19 +6,19 @@ const eventRoutes = Router();
 
 eventRoutes.post(
   "/create/unique",
-  // authMiddleware,
+  authMiddleware,
   eventController.createEventUniqueSchedule.bind(eventController)
 );
 
 eventRoutes.post(
   "/create/multiple",
-  // authMiddleware,
+  authMiddleware,
   eventController.createEventMultipleSchedule.bind(eventController)
 );
 
 eventRoutes.get(
   "/",
-  // authMiddleware,
+  authMiddleware,
   eventController.getEvents.bind(eventController)
 );
 
