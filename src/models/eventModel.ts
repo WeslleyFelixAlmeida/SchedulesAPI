@@ -62,6 +62,29 @@ class EventModel {
     }
   }
 
+  async getEventById(eventId: number) {
+    try {
+      const events = await prisma.events.findUnique({
+        where: { id: eventId },
+        select: {
+          id: true,
+          month: true,
+          year: true,
+          image: true,
+          name: true,
+          shortDescription: true,
+          longDescription: true,
+          type: true,
+          imageType: true,
+          status: true,
+        },
+      });
+      return events;
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  }
+
   async getEvents() {
     try {
       const events = await prisma.events.findMany({
@@ -76,6 +99,7 @@ class EventModel {
           longDescription: true,
           type: true,
           imageType: true,
+          status: true,
         },
       });
       return events;
@@ -83,12 +107,6 @@ class EventModel {
       throw new Error(error);
     }
   }
-
-  async getMultipleSchedules(eventId: number) {
-    //Cuidado ao puxar as informações deste tipo de evento, pois um unico evento pode ter centenas de registros
-  }
-
-  async getUniqueSchedules(eventId: number) {}
 
   async getMaxAndCurrentAmountUnique(eventId: number) {
     const maxAmount = await prisma.eventUniqueSchedules.count({
@@ -114,9 +132,15 @@ class EventModel {
     const isParticipating = await prisma.eventUniqueSchedules.count({
       where: { userId: userId, eventId: eventId },
     });
-    
+
     return isParticipating > 0 ? true : false;
   }
+
+  async getMultipleSchedules(eventId: number) {
+    //Cuidado ao puxar as informações deste tipo de evento, pois um unico evento pode ter centenas de registros
+  }
+
+  async getUniqueSchedules(eventId: number) {}
 }
 
 export { EventModel };

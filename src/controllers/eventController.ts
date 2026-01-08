@@ -59,8 +59,21 @@ class EventController {
     try {
       const userId = req.user?.id;
       const events = await this.eventService.getEvents(userId as number);
-      
+
       res.status(200).json(events);
+    } catch (err: any) {
+      res.status(500).json("Erro interno no servidor " + err);
+    }
+  }
+
+  async getEventsById(req: Request, res: Response) {
+    try {
+      const userId = req.user?.id as number;
+      const eventId = Number(req.params.id);
+
+      const event = await this.eventService.getEventsById(eventId, userId);
+
+      res.status(200).json(event);
     } catch (err: any) {
       res.status(500).json("Erro interno no servidor " + err);
     }

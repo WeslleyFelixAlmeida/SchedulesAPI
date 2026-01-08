@@ -35,6 +35,7 @@ class EventService {
       longDescription: data.eventLongDesc,
       type: "MULTIPLE",
       userId: 1,
+      status: "OPEN",
     };
 
     const createdEventId = await this.eventModel.createEventMultipleSchedule(
@@ -63,6 +64,7 @@ class EventService {
       longDescription: data.eventLongDesc,
       type: "UNIQUE",
       userId: 1,
+      status: "OPEN",
     };
 
     const createdEventId = await this.eventModel.createEventUniqueSchedule(
@@ -113,7 +115,7 @@ class EventService {
             id: event.id,
             title: event.name,
             shortDescription: event.shortDescription,
-            currentStatus: "open",
+            currentStatus: event.status,
             eventType: event.type,
             currentAmount: currentAmount,
             maxAmount: maxAmount,
@@ -125,7 +127,7 @@ class EventService {
             id: event.id,
             title: event.name,
             shortDescription: event.shortDescription,
-            currentStatus: "open",
+            currentStatus: event.status,
             eventType: event.type,
             currentAmount: 0,
             maxAmount: 0,
@@ -137,6 +139,59 @@ class EventService {
     );
 
     return isParticipating;
+  }
+
+  async getEventsById(eventId: number, userId: number) {
+    const eventData = await this.eventModel.getEventById(eventId);
+
+    if (!eventData) {
+      return null;
+    }
+
+    const event = {
+      ...eventData,
+      image: eventData!.image
+        ? `data:${eventData!.imageType};base64,${Buffer.from(
+            eventData!.image
+          ).toString("base64")}`
+        : null,
+    };
+
+    if (event.type === "UNIQUE") {
+      const isParticipating = await this.eventModel.isParticipatingUnique(
+        userId,
+        event.id
+      );
+
+      const { maxAmount, currentAmount } =
+        await this.eventModel.getMaxAndCurrentAmountUnique(userId);
+
+      return {
+        id: event.id,
+        title: event.name,
+        shortDescription: event.shortDescription,
+        description: event.longDescription,
+        currentStatus: event.status,
+        eventType: event.type,
+        currentAmount: currentAmount,
+        maxAmount: maxAmount,
+        eventImage: event.image,
+        isParticipating: isParticipating,
+      };
+    } else if (event.type === "MULTIPLE") {
+      return {
+        id: event.id,
+        title: event.name,
+        shortDescription: event.shortDescription,
+        description: event.longDescription,
+        currentStatus: event.status,
+        eventType: event.type,
+        currentAmount: 0,
+        maxAmount: 0,
+        eventImage: event.image,
+        isParticipating: false,
+      };
+    }
   }
 }
 

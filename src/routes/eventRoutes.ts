@@ -1,6 +1,7 @@
 import { Router } from "express";
 import eventController from "../controllers/eventController";
 import { authMiddleware } from "../middlewares/userMiddlewares";
+import { eventIdValidation } from "../middlewares/eventMiddlewares";
 
 const eventRoutes = Router();
 
@@ -22,5 +23,11 @@ eventRoutes.get(
   eventController.getEvents.bind(eventController)
 );
 
+eventRoutes.get(
+  "/:id",
+  authMiddleware,
+  eventIdValidation,
+  eventController.getEventsById.bind(eventController)
+);
 
 export default eventRoutes;
