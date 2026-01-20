@@ -22,7 +22,7 @@ class EventModel {
 
   async createSchedulesMultiple(
     schedules: Pick<multipleSchedulesType, "days">,
-    eventId: number
+    eventId: number,
   ) {
     // Inserindo os dias
     try {
@@ -32,7 +32,7 @@ class EventModel {
             eventId: eventId,
             day: day.day,
             schedule: schedule,
-          }))
+          })),
         ),
       });
     } catch (error: any) {
@@ -109,38 +109,127 @@ class EventModel {
   }
 
   async getMaxAndCurrentAmountUnique(eventId: number) {
-    const maxAmount = await prisma.eventUniqueSchedules.count({
-      where: { eventId: eventId },
-    });
+    try {
+      const maxAmount = await prisma.eventUniqueSchedules.count({
+        where: { eventId: eventId },
+      });
 
-    const eventData = await prisma.eventUniqueSchedules.findMany({
-      where: { eventId: eventId },
-    });
+      const eventData = await prisma.eventUniqueSchedules.findMany({
+        where: { eventId: eventId },
+      });
 
-    let currentAmount = 0;
+      let currentAmount = 0;
 
-    const count = eventData.forEach((event) => {
-      if (event.userId !== null) {
-        currentAmount += 1;
-      }
-    });
+      const count = eventData.forEach((event) => {
+        if (event.userId !== null) {
+          currentAmount += 1;
+        }
+      });
 
-    return { maxAmount: maxAmount, currentAmount: currentAmount };
+      return { maxAmount: maxAmount, currentAmount: currentAmount };
+    } catch (error: any) {
+      throw new Error(error);
+    }
   }
 
   async isParticipatingUnique(userId: number, eventId: number) {
-    const isParticipating = await prisma.eventUniqueSchedules.count({
-      where: { userId: userId, eventId: eventId },
+    try {
+      const isParticipating = await prisma.eventUniqueSchedules.count({
+        where: { userId: userId, eventId: eventId },
+      });
+      return isParticipating > 0 ? true : false;
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  }
+
+  async getUniqueSchedules(eventId: number) {
+    try {
+      const eventData = await prisma.eventUniqueSchedules.findMany({
+        where: { eventId: eventId },
+        select: {
+          id: true,
+          date: true,
+          schedule: true,
+          eventId: true,
+          userId: true,
+        },
+      });
+
+      return eventData;
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  }
+
+  async getUserEvents(userId: number) {
+    try {
+      const eventData = await prisma.events.findMany({
+        where: { userId: userId },
+        take: 10,
+        select: {
+          id: true,
+          month: true,
+          year: true,
+          image: true,
+          name: true,
+          shortDescription: true,
+          longDescription: true,
+          type: true,
+          imageType: true,
+          status: true,
+        },
+      });
+
+      return eventData;
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  }
+
+  async getMultipleSchedules(eventId: number, day: number) {
+    //Cuidado ao puxar as informações deste tipo de evento, pois um unico evento pode ter centenas de registros
+
+    try {
+      const eventData = await prisma.eventMultipleSchedules.findMany({
+        where: { eventId: eventId, day: day },
+        select: {
+          id: true,
+          schedule: true,
+          eventId: true,
+          userId: true,
+          day: true,
+        },
+      });
+
+      return eventData;
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  }
+
+  async getMultipleSchedulesDays(eventId: number) {
+    const result = await prisma.eventMultipleSchedules.findMany({
+      where: { eventId: eventId },
+      distinct: ["day"],
+      select: { day: true },
+      orderBy: { day: "asc" },
     });
 
-    return isParticipating > 0 ? true : false;
+    return result.map((r) => r.day);
   }
 
-  async getMultipleSchedules(eventId: number) {
-    //Cuidado ao puxar as informações deste tipo de evento, pois um unico evento pode ter centenas de registros
-  }
+  async userAllowed(eventId: number, userId: number) {
+    const result = await prisma.events.findFirst({
+      where: { id: eventId, userId: userId },
+    });
 
-  async getUniqueSchedules(eventId: number) {}
+    if (!result) {
+      return false;
+    }
+
+    return true;
+  }
 }
 
 export { EventModel };

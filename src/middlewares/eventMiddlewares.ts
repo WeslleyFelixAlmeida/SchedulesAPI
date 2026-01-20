@@ -4,7 +4,7 @@ import { z, ZodError } from "zod";
 async function eventIdValidation(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   try {
     const paramsSchema = z.object({
@@ -22,4 +22,25 @@ async function eventIdValidation(
   }
 }
 
-export { eventIdValidation };
+async function eventDayValidation(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const paramsSchema = z.object({
+      day: z.coerce.number().int().min(0),
+    });
+
+    const { day } = paramsSchema.parse(req.query);
+
+    next();
+  } catch (err: any) {
+    if (err instanceof ZodError) {
+      return res.status(400).json({ error: "Identificador inválido" });
+    }
+    return res.status(500).json({ error: "Houve um erro no servidor." });
+  }
+}
+
+export { eventIdValidation, eventDayValidation };

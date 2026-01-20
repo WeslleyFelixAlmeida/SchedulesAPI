@@ -15,9 +15,8 @@ class EventController {
   async createEventMultipleSchedule(req: Request, res: Response) {
     try {
       const data = multipleScheduleSchema.parse(req.body);
-      const createEvent = await this.eventService.createEventMultipleSchedule(
-        data
-      );
+      const createEvent =
+        await this.eventService.createEventMultipleSchedule(data);
 
       res.status(201).json({ eventId: createEvent.eventId });
     } catch (err: any) {
@@ -26,7 +25,7 @@ class EventController {
           .status(400)
           .json(
             `A ação não pode ser concluída devido a dados inválidos, verifique e tente novamente ` +
-              err
+              err,
           );
       }
       res.status(500).json("Erro interno no servidor " + err);
@@ -37,9 +36,8 @@ class EventController {
     try {
       const data = uniqueScheduleSchema.parse(req.body);
 
-      const createEvent = await this.eventService.createEventUniqueSchedule(
-        data
-      );
+      const createEvent =
+        await this.eventService.createEventUniqueSchedule(data);
 
       res.status(201).json({ data: createEvent });
     } catch (err: any) {
@@ -48,7 +46,7 @@ class EventController {
           .status(400)
           .json(
             `A ação não pode ser concluída devido a dados inválidos, verifique e tente novamente ` +
-              err
+              err,
           );
       }
       res.status(500).json("Erro interno no servidor " + err);
@@ -74,6 +72,62 @@ class EventController {
       const event = await this.eventService.getEventsById(eventId, userId);
 
       res.status(200).json(event);
+    } catch (err: any) {
+      res.status(500).json("Erro interno no servidor " + err);
+    }
+  }
+
+  async getUserEvents(req: Request, res: Response) {
+    try {
+      const userId = req.user?.id as number;
+      const events = await this.eventService.getUserEvents(userId);
+
+      res.status(200).json(events);
+    } catch (err: any) {
+      res.status(500).json("Erro interno no servidor " + err);
+    }
+  }
+
+  async getEventSchedules(req: Request, res: Response) {
+    try {
+      const eventId = Number(req.params.id);
+      const schedules = await this.eventService.getEventSchedules(eventId);
+
+      res.status(200).json(schedules);
+    } catch (err: any) {
+      res.status(500).json("Erro interno no servidor " + err);
+    }
+  }
+
+  async getMultipleSchedulesDays(req: Request, res: Response) {
+    try {
+      const userId = req.user?.id as number;
+      const eventId = Number(req.params.id);
+
+      const days = await this.eventService.getMultipleSchedulesDays(
+        eventId,
+        userId,
+      );
+
+      res.status(200).json(days);
+    } catch (err: any) {
+      res.status(500).json("Erro interno no servidor " + err);
+    }
+  }
+
+  async getEventSchedulesMultiple(req: Request, res: Response) {
+    try {
+      const userId = req.user?.id as number;
+      const eventId = Number(req.params.id);
+      const day = Number(req.query.day);
+
+      const schedules = await this.eventService.getEventSchedulesMultiple(
+        eventId,
+        day,
+        userId,
+      );
+
+      res.status(200).json(schedules);
     } catch (err: any) {
       res.status(500).json("Erro interno no servidor " + err);
     }
