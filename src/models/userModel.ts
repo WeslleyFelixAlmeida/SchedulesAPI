@@ -36,7 +36,8 @@ class UserModel {
         select: {
           email: true,
           username: true,
-          //image: true //eventualmente vai ser adicionado a foto de perfil
+          profileImage: true,
+          imageType: true,
         },
       });
       return userData;

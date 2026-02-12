@@ -14,10 +14,14 @@ model User {
   password  String
   role      String    @default("user")
 
-  events    Events[]               // eventos criados pelo usuário
-  multipleSchedules EventMultipleSchedules[] // reservas em escalas múltiplas
-  uniqueSchedules    EventUniqueSchedules[]  // reservas em evento único
+  profileImage Bytes?   // BLOB
+  imageType    String?  // VARCHAR (ex: image/png)
+
+  events             Events[]
+  multipleSchedules  EventMultipleSchedules[]
+  uniqueSchedules    EventUniqueSchedules[]
 }
+
 
 enum EventType {
   UNIQUE

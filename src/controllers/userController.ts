@@ -70,7 +70,7 @@ class UserController {
     try {
       const userData = await this.userService.getUserData({ userId: userId });
 
-      res.status(200).json({ ...userData, userImage: "" });
+      res.status(200).json(userData);
     } catch (err: any) {
       res.status(500).json("Erro interno no servidor");
     }
