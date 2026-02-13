@@ -4,6 +4,7 @@ import {
   userValidateRegister,
   userValidateLogin,
   authMiddleware,
+  validateUpdateUsername,
 } from "../middlewares/userMiddlewares";
 
 const userRoutes = Router();
@@ -33,5 +34,13 @@ userRoutes.get(
   authMiddleware,
   userController.getUserInfo.bind(userController)
 );
+
+userRoutes.patch(
+  "/update/username",
+  authMiddleware,
+  validateUpdateUsername,
+  userController.updateUsername.bind(userController)
+);
+
 
 export default userRoutes;

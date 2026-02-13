@@ -45,6 +45,19 @@ class UserModel {
       throw new Error(error);
     }
   }
+
+  async updateUsername(data: { username: string; userId: number }) {
+    try {
+      const update = await prisma.user.update({
+        where: { id: data.userId },
+        data: { username: data.username },
+      });
+
+      return update.username;
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  }
 }
 
 export { UserModel };

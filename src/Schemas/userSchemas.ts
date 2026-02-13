@@ -30,4 +30,8 @@ const userSchemaLogin = z.object({
   password: z.string().min(5, { message: registerMessages.passwordLowerThan5 }),
 });
 
-export { userSchemaRegister, userSchemaLogin };
+const updateUsername = z.object({
+  username: z.string().min(5, { message: registerMessages.usernameLowerThan5 }),
+});
+
+export { userSchemaRegister, userSchemaLogin, updateUsername };

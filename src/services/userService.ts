@@ -46,7 +46,7 @@ class UserService {
 
     const isPasswordValid = await bcrypt.compare(
       data.password,
-      passwordToCompare
+      passwordToCompare,
     );
 
     if (!isPasswordValid) {
@@ -65,6 +65,15 @@ class UserService {
     const userdata = await this.userModel.getUserData(data.userId);
 
     return userdata;
+  }
+
+  async updateUsername(data: { userId: number; username: string }) {
+    const update = await this.userModel.updateUsername({
+      userId: data.userId,
+      username: data.username,
+    });
+
+    return update;
   }
 }
 

@@ -79,6 +79,22 @@ class UserController {
   async isAuth(req: Request, res: Response) {
     res.status(200).json({ allowed: true });
   }
+
+  async updateUsername(req: Request, res: Response) {
+    const userId = req.user?.id as number;
+    const username: string = req.body.username;
+    console.log("Chegou!")
+    try {
+      const update = await this.userService.updateUsername({
+        userId: userId,
+        username: username,
+      });
+
+      res.status(200).json({ username: update });
+    } catch (err: any) {
+      res.status(500).json("Erro interno no servidor");
+    }
+  }
 }
 const userController = new UserController();
 

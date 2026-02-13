@@ -1,6 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import { z, ZodError } from "zod";
-import { userSchemaLogin, userSchemaRegister } from "../Schemas/userSchemas";
+import {
+  updateUsername,
+  userSchemaLogin,
+  userSchemaRegister,
+} from "../Schemas/userSchemas";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
 interface authTokenPayload extends JwtPayload {
@@ -11,7 +15,7 @@ async function authMiddleware(req: Request, res: Response, next: NextFunction) {
   try {
     const auth_token = req.cookies?.auth_token;
 
-    if (!auth_token) {  
+    if (!auth_token) {
       return res
         .status(401)
         .json({ message: "Acesso negado!", allowed: false });
@@ -19,7 +23,7 @@ async function authMiddleware(req: Request, res: Response, next: NextFunction) {
 
     const decodeCookie = jwt.verify(
       auth_token,
-      process.env.JWT_SECRET!
+      process.env.JWT_SECRET!,
     ) as authTokenPayload;
 
     req.user = { id: decodeCookie.id };
@@ -36,7 +40,7 @@ async function authMiddleware(req: Request, res: Response, next: NextFunction) {
 async function userValidateRegister(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   try {
     userSchemaRegister.parse(req.body);
@@ -53,7 +57,7 @@ async function userValidateRegister(
 async function userValidateLogin(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   try {
     userSchemaLogin.parse(req.body);
@@ -66,4 +70,26 @@ async function userValidateLogin(
     }
   }
 }
-export { authMiddleware, userValidateRegister, userValidateLogin };
+
+async function validateUpdateUsername(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    updateUsername.parse(req.body);
+    next();
+  } catch (err: any) {
+    if (err instanceof z.ZodError) {
+      res.status(400).json(err.message);
+    } else {
+      res.status(500).json("Erro interno no servidor");
+    }
+  }
+}
+export {
+  authMiddleware,
+  userValidateRegister,
+  userValidateLogin,
+  validateUpdateUsername,
+};
