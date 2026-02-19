@@ -83,7 +83,7 @@ class UserController {
   async updateUsername(req: Request, res: Response) {
     const userId = req.user?.id as number;
     const username: string = req.body.username;
-    console.log("Chegou!")
+    console.log("Chegou!");
     try {
       const update = await this.userService.updateUsername({
         userId: userId,
@@ -91,6 +91,17 @@ class UserController {
       });
 
       res.status(200).json({ username: update });
+    } catch (err: any) {
+      res.status(500).json("Erro interno no servidor");
+    }
+  }
+
+  async updateProfileImage(req: Request, res: Response) {
+    const userId = req.user?.id as number;
+    const profileImage = req.file;
+
+    try {
+      res.status(200).json(profileImage?.mimetype);
     } catch (err: any) {
       res.status(500).json("Erro interno no servidor");
     }

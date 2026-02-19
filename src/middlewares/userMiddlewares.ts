@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { z, ZodError } from "zod";
 import {
+  updateProfileImage,
   updateUsername,
   userSchemaLogin,
   userSchemaRegister,
@@ -87,9 +88,27 @@ async function validateUpdateUsername(
     }
   }
 }
+
+async function validateUpdateProfileImage(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    updateProfileImage.parse({ profileImage: req.file });
+    next();
+  } catch (err: any) {
+    if (err instanceof z.ZodError) {
+      res.status(400).json(err.message);
+    } else {
+      res.status(500).json("Erro interno no servidor");
+    }
+  }
+}
 export {
   authMiddleware,
   userValidateRegister,
   userValidateLogin,
   validateUpdateUsername,
+  validateUpdateProfileImage,
 };

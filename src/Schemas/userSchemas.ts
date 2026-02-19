@@ -1,4 +1,5 @@
 import { email, string, z } from "zod";
+import multer from "multer";
 
 const registerMessages = {
   invalidEmail: "E-mail inválido",
@@ -34,4 +35,18 @@ const updateUsername = z.object({
   username: z.string().min(5, { message: registerMessages.usernameLowerThan5 }),
 });
 
-export { userSchemaRegister, userSchemaLogin, updateUsername };
+const updateProfileImage = z.object({
+    profileImage: z
+        .custom<Express.Multer.File>()
+        .refine(file => !!file, "Arquivo é obrigatório")
+        .refine(
+            file => ["image/jpeg", "image/png", "image/webp"].includes(file.mimetype),
+            "Formato de imagem inválido"
+        )
+        .refine(
+            file => file.size <= 2 * 1024 * 1024,
+            "Imagem deve ter no máximo 2MB"
+        ),
+});
+
+export { userSchemaRegister, userSchemaLogin, updateUsername, updateProfileImage };
