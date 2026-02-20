@@ -6,6 +6,7 @@ import {
   authMiddleware,
   validateUpdateUsername,
   validateUpdateProfileImage,
+  userValidateChangePassword,
 } from "../middlewares/userMiddlewares";
 import multer from "multer";
 
@@ -56,6 +57,19 @@ userRoutes.patch(
   upload.single("profileImage"),
   validateUpdateProfileImage,
   userController.updateProfileImage.bind(userController),
+);
+
+userRoutes.delete(
+  "/deleteAcc",
+  authMiddleware,
+  userController.deleteAcc.bind(userController),
+);
+
+userRoutes.delete(
+  "/changePassword",
+  authMiddleware,
+  userValidateChangePassword,
+  userController.changePassword.bind(userController),
 );
 
 export default userRoutes;

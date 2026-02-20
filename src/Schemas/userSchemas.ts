@@ -36,17 +36,29 @@ const updateUsername = z.object({
 });
 
 const updateProfileImage = z.object({
-    profileImage: z
-        .custom<Express.Multer.File>()
-        .refine(file => !!file, "Arquivo é obrigatório")
-        .refine(
-            file => ["image/jpeg", "image/png", "image/webp"].includes(file.mimetype),
-            "Formato de imagem inválido"
-        )
-        .refine(
-            file => file.size <= 2 * 1024 * 1024,
-            "Imagem deve ter no máximo 2MB"
-        ),
+  profileImage: z
+    .custom<Express.Multer.File>()
+    .refine((file) => !!file, "Arquivo é obrigatório")
+    .refine(
+      (file) =>
+        ["image/jpeg", "image/png", "image/webp"].includes(file.mimetype),
+      "Formato de imagem inválido",
+    )
+    .refine(
+      (file) => file.size <= 2 * 1024 * 1024,
+      "Imagem deve ter no máximo 2MB",
+    ),
 });
 
-export { userSchemaRegister, userSchemaLogin, updateUsername, updateProfileImage };
+const changePassword = z.object({
+  oldPassword: z.string().min(5).max(225),
+  newPassword: z.string().min(5).max(225),
+});
+
+export {
+  userSchemaRegister,
+  userSchemaLogin,
+  updateUsername,
+  updateProfileImage,
+  changePassword,
+};

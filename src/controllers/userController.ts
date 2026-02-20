@@ -113,6 +113,14 @@ class UserController {
       res.status(500).json("Erro interno no servidor");
     }
   }
+
+  async deleteAcc(req: Request, res: Response) {
+    
+  }
+
+  async changePassword(req: Request, res: Response){
+
+  }
 }
 const userController = new UserController();
 
