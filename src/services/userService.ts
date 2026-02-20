@@ -63,14 +63,34 @@ class UserService {
 
   async getUserData(data: { userId: number }) {
     const userdata = await this.userModel.getUserData(data.userId);
+    const profileImage =
+      userdata?.profileImage && userdata?.imageType
+        ? `data:${userdata.imageType};base64,${Buffer.from(userdata.profileImage).toString("base64")}`
+        : null;
 
-    return userdata;
+    const treatedData = { ...userdata, profileImage: profileImage };
+
+    return treatedData;
   }
 
   async updateUsername(data: { userId: number; username: string }) {
     const update = await this.userModel.updateUsername({
       userId: data.userId,
       username: data.username,
+    });
+
+    return update;
+  }
+
+  async updateProfileImage(data: {
+    profileImage: Buffer;
+    userId: number;
+    imageType: string;
+  }) {
+    const update = await this.userModel.updateProfileImage({
+      profileImage: data.profileImage,
+      userId: data.userId,
+      imageType: data.imageType,
     });
 
     return update;

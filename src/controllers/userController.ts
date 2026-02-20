@@ -98,10 +98,17 @@ class UserController {
 
   async updateProfileImage(req: Request, res: Response) {
     const userId = req.user?.id as number;
-    const profileImage = req.file;
+    const profileImage = req.file?.buffer;
+    const imageType = req.file?.mimetype;
 
     try {
-      res.status(200).json(profileImage?.mimetype);
+      const update = await this.userService.updateProfileImage({
+        profileImage: profileImage as Buffer<ArrayBufferLike>,
+        imageType: imageType as string,
+        userId: userId,
+      });
+
+      res.status(200).json("Imagem alterada com sucesso!");
     } catch (err: any) {
       res.status(500).json("Erro interno no servidor");
     }

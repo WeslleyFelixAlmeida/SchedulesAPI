@@ -58,6 +58,26 @@ class UserModel {
       throw new Error(error);
     }
   }
+
+  async updateProfileImage(data: {
+    profileImage: Buffer;
+    imageType: string;
+    userId: number;
+  }) {
+    try {
+      const update = await prisma.user.update({
+        where: { id: data.userId },
+        data: {
+          profileImage: new Uint8Array(data.profileImage),
+          imageType: data.imageType,
+        },
+      });
+
+      return update.username;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export { UserModel };
