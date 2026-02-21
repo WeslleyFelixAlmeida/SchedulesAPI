@@ -83,7 +83,7 @@ class UserController {
   async updateUsername(req: Request, res: Response) {
     const userId = req.user?.id as number;
     const username: string = req.body.username;
-    console.log("Chegou!");
+
     try {
       const update = await this.userService.updateUsername({
         userId: userId,
@@ -115,11 +115,25 @@ class UserController {
   }
 
   async deleteAcc(req: Request, res: Response) {
-    
+    const userId = req.user?.id as number;
+
+    try {
+      res.status(200).json("");
+    } catch (err: any) {
+      res.status(500).json("Erro interno no servidor");
+    }
   }
 
-  async changePassword(req: Request, res: Response){
-
+  async changePassword(req: Request, res: Response) {
+    const userId = req.user?.id as number;
+    const newPassword = req.body.newPassword;
+    const oldPassword = req.body.oldPassword;
+    
+    try {
+      res.status(200).json(`Recebido senhas: ${oldPassword} ; ${newPassword}`);
+    } catch (err: any) {
+      res.status(500).json("Erro interno no servidor");
+    }
   }
 }
 const userController = new UserController();

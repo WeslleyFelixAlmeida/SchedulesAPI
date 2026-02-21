@@ -65,7 +65,7 @@ userRoutes.delete(
   userController.deleteAcc.bind(userController),
 );
 
-userRoutes.delete(
+userRoutes.patch(
   "/changePassword",
   authMiddleware,
   userValidateChangePassword,

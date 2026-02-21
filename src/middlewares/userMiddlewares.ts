@@ -113,7 +113,9 @@ async function userValidateChangePassword(
   next: NextFunction,
 ) {
   try {
-    changePassword.parse(req.body);
+    console.log(req.body)
+    const teste = changePassword.parse(req.body);
+
     next();
   } catch (err: any) {
     if (err instanceof z.ZodError) {
