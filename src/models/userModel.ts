@@ -46,6 +46,22 @@ class UserModel {
     }
   }
 
+  async getUserPassword(userId: number) {
+    try {
+      const userData = await prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+        select: {
+          password: true,
+        },
+      });
+      return userData;
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  }
+
   async updateUsername(data: { username: string; userId: number }) {
     try {
       const update = await prisma.user.update({
@@ -73,9 +89,36 @@ class UserModel {
         },
       });
 
-      return update.username;
-    } catch (error) {
-      throw error;
+      return { profileImage: update.profileImage, imageType: update.imageType };
+    } catch (error: any) {
+      throw new Error();
+    }
+  }
+
+  async changePassword(data: { newPassword: string; userId: number }) {
+    try {
+      const update = await prisma.user.update({
+        where: { id: data.userId },
+        data: {
+          password: data.newPassword,
+        },
+      });
+
+      return { userId: update.id };
+    } catch (error: any) {
+      throw new Error();
+    }
+  }
+
+  async deleteAccount(data: { userId: number }) {
+    try {
+      const deleteAcc = await prisma.user.delete({
+        where: { id: data.userId },
+      });
+
+      return { accDeleted: true };
+    } catch (error: any) {
+      throw new Error();
     }
   }
 }

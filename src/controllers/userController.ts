@@ -108,7 +108,7 @@ class UserController {
         userId: userId,
       });
 
-      res.status(200).json("Imagem alterada com sucesso!");
+      res.status(200).json({ profileImage: update });
     } catch (err: any) {
       res.status(500).json("Erro interno no servidor");
     }
@@ -116,10 +116,27 @@ class UserController {
 
   async deleteAcc(req: Request, res: Response) {
     const userId = req.user?.id as number;
-
+    const password = req.body.deletePassword;
     try {
-      res.status(200).json("");
+      const deleteAcc = await this.userService.deleteAccount({
+        userId: userId,
+        password: password,
+      });
+
+      if (deleteAcc.accDeleted === true) {
+        res.clearCookie("auth_token", {
+          httpOnly: true,
+          secure: false,
+          sameSite: "strict",
+        });
+      }
+
+      res.status(200).json(true);
     } catch (err: any) {
+      if (err instanceof InvalidCredentialsException) {
+        res.status(401).json("Erro, credenciais inválidas");
+        return null;
+      }
       res.status(500).json("Erro interno no servidor");
     }
   }
@@ -128,10 +145,20 @@ class UserController {
     const userId = req.user?.id as number;
     const newPassword = req.body.newPassword;
     const oldPassword = req.body.oldPassword;
-    
+
     try {
-      res.status(200).json(`Recebido senhas: ${oldPassword} ; ${newPassword}`);
+      const changePassword = await this.userService.changePassword({
+        userId: userId,
+        newPassword: newPassword,
+        oldPassword: oldPassword,
+      });
+
+      res.status(200).json("Senha alterada com sucesso!");
     } catch (err: any) {
+      if (err instanceof InvalidCredentialsException) {
+        res.status(401).json("Erro, credenciais inválidas");
+        return null;
+      }
       res.status(500).json("Erro interno no servidor");
     }
   }

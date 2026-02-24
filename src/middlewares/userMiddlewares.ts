@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { z, ZodError } from "zod";
 import {
   changePassword,
+  deleteAccPassword,
   updateProfileImage,
   updateUsername,
   userSchemaLogin,
@@ -113,9 +114,24 @@ async function userValidateChangePassword(
   next: NextFunction,
 ) {
   try {
-    console.log(req.body)
-    const teste = changePassword.parse(req.body);
+    changePassword.parse(req.body);
+    next();
+  } catch (err: any) {
+    if (err instanceof z.ZodError) {
+      res.status(400).json(err.message);
+    } else {
+      res.status(500).json("Erro interno no servidor");
+    }
+  }
+}
 
+async function userValidateDeleteAccPassword(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    deleteAccPassword.parse(req.body);
     next();
   } catch (err: any) {
     if (err instanceof z.ZodError) {
@@ -132,4 +148,5 @@ export {
   validateUpdateUsername,
   validateUpdateProfileImage,
   userValidateChangePassword,
+  userValidateDeleteAccPassword,
 };

@@ -55,10 +55,15 @@ const changePassword = z.object({
   newPassword: z.string().min(5).max(225),
 });
 
+const deleteAccPassword = z.object({
+  deletePassword: z.string().min(5).max(225),
+});
+
 export {
   userSchemaRegister,
   userSchemaLogin,
   updateUsername,
   updateProfileImage,
   changePassword,
+  deleteAccPassword,
 };

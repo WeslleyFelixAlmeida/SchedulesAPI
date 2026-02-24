@@ -93,7 +93,63 @@ class UserService {
       imageType: data.imageType,
     });
 
-    return update;
+    const profileImage =
+      update?.profileImage && update?.imageType
+        ? `data:${update.imageType};base64,${Buffer.from(update.profileImage).toString("base64")}`
+        : null;
+
+    return profileImage;
+  }
+
+  async changePassword(data: {
+    oldPassword: string;
+    newPassword: string;
+    userId: number;
+  }) {
+    const password = await this.userModel.getUserPassword(data.userId);
+    if (!password) {
+      throw new Error("Ocorreu um erro durante a operação!");
+    }
+
+    const comparePasswords = await bcrypt.compare(
+      data.oldPassword,
+      password.password,
+    );
+
+    if (!comparePasswords) {
+      throw new InvalidCredentialsException();
+    }
+
+    const newPasswordHash = await this.createPasswordHash(data.newPassword);
+
+    const change = await this.userModel.changePassword({
+      newPassword: newPasswordHash,
+      userId: data.userId,
+    });
+
+    return change;
+  }
+
+  async deleteAccount(data: { userId: number; password: string }) {
+    const password = await this.userModel.getUserPassword(data.userId);
+    if (!password) {
+      throw new Error("Ocorreu um erro durante a operação!");
+    }
+
+    const comparePasswords = await bcrypt.compare(
+      data.password,
+      password.password,
+    );
+
+    if (!comparePasswords) {
+      throw new InvalidCredentialsException();
+    }
+
+    const deleteAcc = await this.userModel.deleteAccount({
+      userId: data.userId,
+    });
+
+    return deleteAcc;
   }
 }
 

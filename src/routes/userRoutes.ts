@@ -7,6 +7,7 @@ import {
   validateUpdateUsername,
   validateUpdateProfileImage,
   userValidateChangePassword,
+  userValidateDeleteAccPassword,
 } from "../middlewares/userMiddlewares";
 import multer from "multer";
 
@@ -61,6 +62,7 @@ userRoutes.patch(
 
 userRoutes.delete(
   "/deleteAcc",
+  userValidateDeleteAccPassword,
   authMiddleware,
   userController.deleteAcc.bind(userController),
 );
