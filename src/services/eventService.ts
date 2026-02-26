@@ -118,7 +118,7 @@ class EventService {
           );
 
           const { maxAmount, currentAmount } =
-            await this.eventModel.getMaxAndCurrentAmountUnique(userId);
+            await this.eventModel.getMaxAndCurrentAmountUnique(event.id);
 
           return {
             id: event.id,
@@ -257,10 +257,7 @@ class EventService {
     day: number,
     userId: number,
   ) {
-    const data = await this.eventModel.getMultipleSchedules(
-      eventId,
-      day,
-    );
+    const data = await this.eventModel.getMultipleSchedules(eventId, day);
 
     return data;
   }
@@ -270,6 +267,23 @@ class EventService {
     const days = await this.eventModel.getMultipleSchedulesDays(eventId);
 
     return days;
+  }
+
+  async joinUniqueEvent(eventId: number, userId: number) {
+    const eventSchedules = await this.eventModel.getUniqueSchedules(eventId);
+    const freeSchedule = eventSchedules.find((schedule) => !schedule.userId);
+
+    if (!freeSchedule) {
+      return false;
+    }
+
+    const join = await this.eventModel.joinUniqueEvent({
+      eventId: eventId,
+      userId: userId,
+      scheduleId: freeSchedule.id,
+    });
+
+    return join;
   }
 }
 

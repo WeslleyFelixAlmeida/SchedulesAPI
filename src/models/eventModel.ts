@@ -118,13 +118,17 @@ class EventModel {
         where: { eventId: eventId },
       });
 
-      let currentAmount = 0;
-
-      const count = eventData.forEach((event) => {
-        if (event.userId !== null) {
-          currentAmount += 1;
-        }
+      const currentAmount = await prisma.eventUniqueSchedules.count({
+        where: {
+          eventId: eventId,
+          userId: {
+            not: null,
+          },
+        },
+        // select: {id: true}
       });
+
+      // console.log(currentAmount.id)
 
       return { maxAmount: maxAmount, currentAmount: currentAmount };
     } catch (error: any) {
@@ -229,6 +233,26 @@ class EventModel {
     }
 
     return true;
+  }
+
+  async joinUniqueEvent(data: {
+    eventId: number;
+    userId: number;
+    scheduleId: number;
+  }) {
+    try {
+      const eventData = await prisma.eventUniqueSchedules.update({
+        data: { userId: data.userId },
+        where: { eventId: data.eventId, id: data.scheduleId },
+        select: {
+          id: true,
+        },
+      });
+
+      return eventData;
+    } catch (error: any) {
+      throw new Error(error);
+    }
   }
 }
 

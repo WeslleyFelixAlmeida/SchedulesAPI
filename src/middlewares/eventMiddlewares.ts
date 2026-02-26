@@ -12,7 +12,6 @@ async function eventIdValidation(
     });
 
     const { id } = paramsSchema.parse(req.params);
-
     next();
   } catch (err: any) {
     if (err instanceof ZodError) {

@@ -61,4 +61,13 @@ eventRoutes.get(
   eventController.getMultipleSchedulesDays.bind(eventController),
 );
 
+eventRoutes.patch(
+  "/join/unique/:id",
+  authMiddleware,
+  eventIdValidation,
+  eventController.joinUniqueEvent.bind(eventController),
+);
+
+
+
 export default eventRoutes;
