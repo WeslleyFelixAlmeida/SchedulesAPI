@@ -285,6 +285,23 @@ class EventService {
 
     return join;
   }
+
+    async exitUniqueEvent(eventId: number, userId: number) {
+    const eventSchedules = await this.eventModel.getUniqueSchedules(eventId);
+    const occupiedSchedule = eventSchedules.find((schedule) => schedule.userId);
+
+    if (!occupiedSchedule) {
+      return false;
+    }
+
+    const join = await this.eventModel.exitUniqueEvent({
+      eventId: eventId,
+      userId: userId,
+      scheduleId: occupiedSchedule.id,
+    });
+
+    return join;
+  }
 }
 
 export { EventService };

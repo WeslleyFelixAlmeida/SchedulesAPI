@@ -153,6 +153,22 @@ class EventController {
       res.status(500).json("Erro interno no servidor " + err);
     }
   }
+
+  async exitUniqueEvent(req: Request, res: Response) {
+    try {
+      const userId = req.user?.id as number;
+      const eventId = Number(req.params.id);
+
+      const schedules = await this.eventService.exitUniqueEvent(
+        eventId,
+        userId,
+      );
+
+      res.status(200).json("Saiu do evento de id: " + eventId);
+    } catch (err: any) {
+      res.status(500).json("Erro interno no servidor " + err);
+    }
+  }
 }
 
 const eventController = new EventController();

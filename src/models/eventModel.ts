@@ -125,10 +125,7 @@ class EventModel {
             not: null,
           },
         },
-        // select: {id: true}
       });
-
-      // console.log(currentAmount.id)
 
       return { maxAmount: maxAmount, currentAmount: currentAmount };
     } catch (error: any) {
@@ -244,6 +241,30 @@ class EventModel {
       const eventData = await prisma.eventUniqueSchedules.update({
         data: { userId: data.userId },
         where: { eventId: data.eventId, id: data.scheduleId },
+        select: {
+          id: true,
+        },
+      });
+
+      return eventData;
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  }
+
+  async exitUniqueEvent(data: {
+    eventId: number;
+    userId: number;
+    scheduleId: number;
+  }) {
+    try {
+      const eventData = await prisma.eventUniqueSchedules.update({
+        data: { userId: null },
+        where: {
+          eventId: data.eventId,
+          id: data.scheduleId,
+          userId: data.userId,
+        },
         select: {
           id: true,
         },

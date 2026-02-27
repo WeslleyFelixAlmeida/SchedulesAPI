@@ -68,6 +68,12 @@ eventRoutes.patch(
   eventController.joinUniqueEvent.bind(eventController),
 );
 
+eventRoutes.patch(
+  "/exit/unique/:id",
+  authMiddleware,
+  eventIdValidation,
+  eventController.exitUniqueEvent.bind(eventController),
+);
 
 
 export default eventRoutes;
