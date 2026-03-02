@@ -173,7 +173,7 @@ class EventService {
       );
 
       const { maxAmount, currentAmount } =
-        await this.eventModel.getMaxAndCurrentAmountUnique(userId);
+        await this.eventModel.getMaxAndCurrentAmountUnique(event.id);
 
       return {
         id: event.id,
@@ -286,7 +286,7 @@ class EventService {
     return join;
   }
 
-    async exitUniqueEvent(eventId: number, userId: number) {
+  async exitUniqueEvent(eventId: number, userId: number) {
     const eventSchedules = await this.eventModel.getUniqueSchedules(eventId);
     const occupiedSchedule = eventSchedules.find((schedule) => schedule.userId);
 
