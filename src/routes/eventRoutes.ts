@@ -4,6 +4,7 @@ import { authMiddleware } from "../middlewares/userMiddlewares";
 import {
   eventIdValidation,
   eventDayValidation,
+  userSchedulesUrlValidation,
 } from "../middlewares/eventMiddlewares";
 
 const eventRoutes = Router();
@@ -75,5 +76,11 @@ eventRoutes.patch(
   eventController.exitUniqueEvent.bind(eventController),
 );
 
+eventRoutes.get(
+  "/userSchedules",
+  authMiddleware,
+  userSchedulesUrlValidation,
+  eventController.getUserSchedules.bind(eventController),
+);
 
 export default eventRoutes;

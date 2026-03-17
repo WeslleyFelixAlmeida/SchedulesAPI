@@ -275,6 +275,29 @@ class EventModel {
       throw new Error(error);
     }
   }
+
+  async getUserSchedules(data: { userId: number; after: number }) {
+    try {
+      const eventData = await prisma.eventUniqueSchedules.findMany({
+        where: { userId: data.userId, id: { gt: data.after } },
+        take: 11,
+        select: {
+          id: true,
+          schedule: true,
+          eventId: true,
+          userId: true,
+          date: true
+        },
+        orderBy: {
+          id: "asc",
+        },
+      });
+
+      return eventData;
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  }
 }
 
 export { EventModel };

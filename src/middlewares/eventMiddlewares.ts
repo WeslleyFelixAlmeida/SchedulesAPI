@@ -42,4 +42,27 @@ async function eventDayValidation(
   }
 }
 
-export { eventIdValidation, eventDayValidation };
+async function userSchedulesUrlValidation(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const urlSchema = z.object({
+      after: z.coerce.number(),
+    });
+
+    const validate = urlSchema.parse(req.query);
+
+    next();
+  } catch (err: any) {
+    if (err instanceof ZodError) {
+      return res
+        .status(400)
+        .json({ error: "Identificador de página inválido" });
+    }
+    return res.status(500).json({ error: "Houve um erro no servidor." });
+  }
+}
+
+export { eventIdValidation, eventDayValidation, userSchedulesUrlValidation };

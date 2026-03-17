@@ -4,7 +4,7 @@ import {
   multipleScheduleSchema,
   uniqueScheduleSchema,
 } from "../Schemas/eventSchemas";
-import { ZodError } from "zod";
+import { string, ZodError } from "zod";
 
 class EventController {
   private eventService: EventService;
@@ -165,6 +165,22 @@ class EventController {
       );
 
       res.status(200).json("Saiu do evento de id: " + eventId);
+    } catch (err: any) {
+      res.status(500).json("Erro interno no servidor " + err);
+    }
+  }
+
+  async getUserSchedules(req: Request, res: Response) {
+    try {
+      const userId = req.user?.id as number;
+      const after = Number(req.query.after);
+      
+      const schedules = await this.eventService.getUserSchedules({
+        userId: userId,
+        after: after,
+      });
+
+      res.status(200).json(schedules);
     } catch (err: any) {
       res.status(500).json("Erro interno no servidor " + err);
     }

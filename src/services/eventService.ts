@@ -302,6 +302,50 @@ class EventService {
 
     return join;
   }
+
+  async getUserSchedules(data: { userId: number; after: number }) {
+    const schedules = await this.eventModel.getUserSchedules({
+      after: data.after,
+      userId: data.userId,
+    });
+
+    if (!schedules) {
+      return false;
+    }
+
+    const eventsInfos = await Promise.all(
+      schedules.map(async (schedule) => {
+        const eventData = await this.eventModel.getEventById(
+          schedule.eventId as number,
+        );
+        const formatedDate = new Date(schedule.date);
+
+        const formattedDate = `${String(formatedDate.getDate()).padStart(2, "0")}/${String(
+          formatedDate.getMonth() + 1,
+        ).padStart(2, "0")}/${formatedDate.getFullYear()}`;
+
+        return {
+          id: schedule.id,
+          schedule: schedule.schedule,
+          eventId: schedule.eventId,
+          date: formattedDate,
+          name: eventData?.name,
+          status: eventData?.status,
+        };
+      }),
+    );
+
+    //Não enviar o eventId para o front, apenas o id da tabela das escalas!
+    if (schedules.length > 10) {
+      return {
+        data: eventsInfos,
+        hasNext: true,
+        after: schedules[9].id,
+      };
+    }
+
+    return { data: eventsInfos, hasNext: false, after: null };
+  }
 }
 
 export { EventService };
