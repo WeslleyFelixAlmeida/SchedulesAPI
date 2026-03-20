@@ -261,8 +261,8 @@ class EventModel {
       const eventData = await prisma.eventUniqueSchedules.update({
         data: { userId: null },
         where: {
-          eventId: data.eventId,
           id: data.scheduleId,
+          eventId: data.eventId,
           userId: data.userId,
         },
         select: {
@@ -271,6 +271,21 @@ class EventModel {
       });
 
       return eventData;
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  }
+
+  async getUserExitScheduleId(data: { userId: number; eventId: number }) {
+    try {
+      const scheduleId = await prisma.eventUniqueSchedules.findFirst({
+        where: { userId: data.userId, eventId: data.eventId },
+        select: {
+          id: true,
+        },
+      });
+      
+      return scheduleId;
     } catch (error: any) {
       throw new Error(error);
     }
@@ -286,7 +301,7 @@ class EventModel {
           schedule: true,
           eventId: true,
           userId: true,
-          date: true
+          date: true,
         },
         orderBy: {
           id: "asc",

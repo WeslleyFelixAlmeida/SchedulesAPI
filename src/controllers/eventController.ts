@@ -159,12 +159,16 @@ class EventController {
       const userId = req.user?.id as number;
       const eventId = Number(req.params.id);
 
-      const schedules = await this.eventService.exitUniqueEvent(
-        eventId,
-        userId,
-      );
+      const exitEvent = await this.eventService.exitUniqueEvent({
+        userId: userId,
+        eventId: eventId,
+      });
 
-      res.status(200).json("Saiu do evento de id: " + eventId);
+      if (!exitEvent) {
+        return res.status(422).json("Erro ao sair do evento");
+      }
+
+      res.status(200).json("Saiu do evento");
     } catch (err: any) {
       res.status(500).json("Erro interno no servidor " + err);
     }
@@ -174,7 +178,7 @@ class EventController {
     try {
       const userId = req.user?.id as number;
       const after = Number(req.query.after);
-      
+
       const schedules = await this.eventService.getUserSchedules({
         userId: userId,
         after: after,

@@ -286,21 +286,23 @@ class EventService {
     return join;
   }
 
-  async exitUniqueEvent(eventId: number, userId: number) {
-    const eventSchedules = await this.eventModel.getUniqueSchedules(eventId);
-    const occupiedSchedule = eventSchedules.find((schedule) => schedule.userId);
-
-    if (!occupiedSchedule) {
-      return false;
-    }
-
-    const join = await this.eventModel.exitUniqueEvent({
-      eventId: eventId,
-      userId: userId,
-      scheduleId: occupiedSchedule.id,
+  async exitUniqueEvent(data: { userId: number; eventId: number }) {
+    const scheduleId = await this.eventModel.getUserExitScheduleId({
+      eventId: data.eventId,
+      userId: data.userId,
     });
 
-    return join;
+    if (!scheduleId) {
+      return null;
+    }
+
+    const exit = await this.eventModel.exitUniqueEvent({
+      eventId: data.eventId,
+      userId: data.userId,
+      scheduleId: scheduleId.id,
+    });
+
+    return exit;
   }
 
   async getUserSchedules(data: { userId: number; after: number }) {
@@ -331,11 +333,11 @@ class EventService {
           date: formattedDate,
           name: eventData?.name,
           status: eventData?.status,
+          type: eventData?.type,
         };
       }),
     );
 
-    //Não enviar o eventId para o front, apenas o id da tabela das escalas!
     if (schedules.length > 10) {
       return {
         data: eventsInfos,
